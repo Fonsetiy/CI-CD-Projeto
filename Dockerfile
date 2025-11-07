@@ -1,7 +1,7 @@
 FROM python:3.11-slim
 
 # Define o diretório de trabalho dentro do container
-WORKDIR .
+WORKDIR /hello-app
 
 # Copia o arquivo de dependências
 COPY requirements.txt .

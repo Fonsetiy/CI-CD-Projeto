@@ -1,42 +1,63 @@
-name: CI/CD Pipeline
+name: CI/CD - Build & Update Manifests
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
 
 jobs:
-  build:
+  build-and-push:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      - name: Checkout source
         uses: actions/checkout@v4
 
-      - name: Login no Docker Hub
-        uses: docker/login-action@v3
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Setup Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login Docker Hub
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build e Push da imagem
-        id: build
+      - name: Build and push image
         uses: docker/build-push-action@v4
         with:
+          context: .
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/hello-app:${{ github.sha }}
 
-      - name: Configurar chave SSH
-        uses: webfactory/ssh-agent@v0.8.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Atualizar repo de manifests
+      # ✅ CONFIGURAÇÃO SSH
+      - name: Setup SSH
         run: |
-          git clone git@github.com:Fonsetiy/hello-manifests.git
-          cd hello-manifests
-          git checkout -b update-image-${{ github.run_number }}
-          sed -i "s|TAG_PLACEHOLDER|${{ github.sha }}|g" deployment.yaml
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
-          git add deployment.yaml
-          git commit -m "Atualizando imagem para ${{ github.sha }}"
-          git push origin HEAD
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "actions@github.com"
+
+      - name: Update manifests repo (SSH)
+        run: |
+          git clone git@github.com:Fonsetiy/hello-manifest.git hello-manifest
+          cd hello-manifest
+          sed -i "s| ${{secrets.DOCKER_USERNAME}}/hello-app:.*| ${{secrets.DOCKER_USERNAME}}/hello-app:${{ github.sha }}|g" deployment.yaml
+          git add .
+          git commit -m "ci: update image to ${{ github.sha }}"
+          git push origin main
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.token}}
+          commit-message: "ci: update image to ${{ github.sha }}"
+          title: "Atualizar imagem para ${{ github.sha }}"
+          body: "Atualização automática da imagem para ${{ github.sha }}"
+          branch: "update-image-${{ github.sha }}"
+          base: "main"
