@@ -4,10 +4,10 @@ A adoção de CI/CD (Integração Contínua e Entrega Contínua) tornou-se essen
 
 Dominar essas tecnologias é crucial para profissionais de DevOps e desenvolvimento moderno, sendo este projeto uma demonstração prática dessa integração.
 
-## Objetivo
+## 📌 Objetivo
 Este projeto tem como objetivo automatizar o ciclo completo de desenvolvimento, build, deploy e execução de uma aplicação FastAPI, implementando um pipeline de CI/CD utilizando GitHub Actions, com Docker Hub como registro de imagens, e ArgoCD para entrega contínua em um cluster Kubernetes local gerenciado pelo Rancher Desktop.
 
-## Pré-requisitos
+## ✅ Pré-requisitos
 • Conta no GitHub (repo público) 
 
 • Conta no Docker Hub com token de acesso 
@@ -22,9 +22,10 @@ Este projeto tem como objetivo automatizar o ciclo completo de desenvolvimento, 
 
 • Python 3 e Docker instalados
 
-## Tecnologias Utilizadas
+## 🛠 Tecnologias Utilizadas
 [![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://docs.docker.com/)
 [![Docker Hub](https://img.shields.io/badge/Docker_Hub-140664?style=for-the-badge&logo=docker&logoColor=white)](https://hub.docker.com/)
+[![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)](https://ubuntu.com/)
 [![Python 3](https://img.shields.io/badge/Python_3-00ABD1?style=for-the-badge&logo=python&logoColor=white)](https://docs.python.org/3/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://docs.github.com/)
@@ -33,10 +34,9 @@ Este projeto tem como objetivo automatizar o ciclo completo de desenvolvimento, 
 [![Argo CD](https://img.shields.io/badge/ArgoCD-EF7B4D?style=for-the-badge&logo=argo&logoColor=white)](https://argo-cd.readthedocs.io/)
 [![Visual Studio Code](https://img.shields.io/badge/Visual_Studio_Code-007ACC?style=for-the-badge&logo=visualstudiocode&logoColor=white)](https://code.visualstudio.com/docs)
 [![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)](https://kubernetes.io/docs/)
-[![Minikube](https://img.shields.io/badge/Minikube-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)](https://minikube.sigs.k8s.io/docs/)
 
 ## 🔷 Etapa 1 - Estruturação do Projeto, Aplicação FastAPI e Dockerfile
-Criaremos os respositórios do projeto, uma aplicação FastAPI simples e a containerizaremos com Docker, preparando a base do projeto.
+Criaremos os repositórios do projeto, uma aplicação FastAPI simples e a containerizaremos com Docker, preparando a base do projeto.
 
 #### 🔹 Etapa 1.1 🠒 Criação dos repositórios no GitHub
 Seguindo a arquitetura GitOps, o projeto será organizado em dois repositórios independentes com propósitos específicos:
@@ -97,7 +97,7 @@ Nesta etapa, foi configurado o pipeline de Integração e Entrega Contínua (CI/
 
 - Gerar um Pull Request automático nesse repositório, permitindo que o ArgoCD detecte a nova versão e realize o deploy contínuo no cluster Kubernetes.
 
-#### 🔹 Estapa 2.1 - Arquitetura do Workflow
+#### 🔹 Etapa 2.1 - Arquitetura do Workflow
 O fluxo de automação foi implementado no diretório .github/workflows/ci-cd.yml, funcionando como o centro do processo de entrega contínua.
 
 Funcionamento do Pipeline:
@@ -207,23 +207,23 @@ Procedimento para criação do PAT:
 5. Armazenamento Seguro: Adicione o token como segredo no repositório da aplicação com o nome PAT
 Este token concederá permissão para o workflow realizar commits e abrir Pull Requests automaticamente no repositório de manifests.
 
-#### Etapa 2.4 - Publicação de Imagens no Docker Hub
+#### 🔹 Etapa 2.4 - Publicação de Imagens no Docker Hub
 O workflow demonstrou eficiência ao construir e publicar automaticamente a imagem hello-app no Docker Hub, utilizando um sistema de versionamento duplo que inclui tanto a tag latest quanto o identificador único do commit (${{ github.sha }}).
 
 <img width="1292" height="639" alt="Captura de tela de 2025-11-07 17-12-40" src="https://github.com/user-attachments/assets/1465b678-93a5-47e9-b383-c507dcc857e4" />
 
-#### Etapa 2.5 - Sincronização Automatizada de Manifestos
+#### 🔹 Etapa 2.5 - Sincronização Automatizada de Manifestos
 O pipeline executou com sucesso a atualização do arquivo de deployment, criando automaticamente um Pull Request no repositório hello-manifests com a nova tag da imagem.
 
 <img width="1298" height="360" alt="Captura de tela de 2025-11-07 17-15-09" src="https://github.com/user-attachments/assets/bf4486c3-ec54-4e3a-9f2e-65fda9eccc52" />
 
 
-## Etapa 3 - Criação dos Manifests
+## 🔷 Etapa 3 - Criação dos Manifests
 Nesta fase, foram desenvolvidos os arquivos de configuração do Kubernetes que definem o estado desejado da aplicação no cluster. Esses manifestos servem como fonte da verdade para o ArgoCD, seguindo a metodologia GitOps.
 
 O repositório de infraestrutura mantém uma sincronização automática com o pipeline de CI/CD, recebendo atualizações sempre que uma nova versão da imagem Docker é gerada. O ArgoCD monitora continuamente este repositório, garantindo que o estado real do cluster corresponda exatamente às definições versionadas no Git.
 
-#### Etapa 3.1 - Reposotório dos manifests
+#### 🔹 Etapa 3.1 - Repositório dos manifests
 Os arquivos desta etapa podem ser encontrados no repositório: [hello-manifests](https://github.com/Fonsetiy/hello-manifests)
 
 🔸 Arquivo Deployment:
@@ -274,12 +274,12 @@ spec:
 Define qual o serviço responsável por expor a aplicação dentro do cluster Kubernetes.
 Com esses arquivos configurados corretamente, o ArgoCD poderá sincronizar automaticamente os deploys conforme as atualizações de imagem feitas via GitHub Actions.
 
-## Etapa 4 - Criação e Integração do App no ArgoCD
+## 🔷 Etapa 4 - Criação e Integração do App no ArgoCD
 Nesta fase, foi estabelecida a conexão entre o ArgoCD e o repositório de manifestos, criando uma aplicação que atua como ponte de sincronização contínua.
 
 A aplicação configurada no ArgoCD monitora permanentemente o repositório Git de infraestrutura, detectando automaticamente qualquer modificação nos arquivos Kubernetes e replicando essas alterações no cluster local, mantendo o ambiente sempre alinhado com o estado desejado definido no versionamento.
 
-#### Etapa 4.1 - Acesso ao painel do ArgoCD (via port-forward)
+#### 🔹 Etapa 4.1 - Acesso ao painel do ArgoCD (via port-forward)
 Para acessar o painel web do ArgoCD, utilize o comando:
 ``` bash
 kubectl port-forward svc/argocd-server -n argocd 8080:443
@@ -287,16 +287,16 @@ kubectl port-forward svc/argocd-server -n argocd 8080:443
 
 Acesse o painel através do navegador pelo endereço:
 ```
-https://localhost:808
+https://localhost:8080
 ```
 
-#### Etapa 4.2 -  Obter a senha de acesso
+#### 🔹 Etapa 4.2 -  Obter a senha de acesso
 User padrão: `admin`
 Senha: utilize o comando abaixo para obter a senha gerada automaticamente:
 ```bash
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 ```
-#### Etapa 4.3 - Criação do App no ArgoCD
+#### 🔹 Etapa 4.3 - Criação do App no ArgoCD
 Após o acesso no painel do ArgoCD, clique em "Applications" no menu lateral, e em seguida clique no botão "+ New App".
 Preencha os campos da aplicação da seguinte forma:
 
@@ -337,7 +337,7 @@ Finalize clicando em Create para registrar a aplicação.
 
 <img width="1303" height="653" alt="Captura de tela de 2025-11-07 11-27-34" src="https://github.com/user-attachments/assets/3af0c062-4bc1-4141-9784-ee625393a2c5" />
 
-#### Etapa 4.4 - Status de Sincronização da Aplicação
+#### 🔹 Etapa 4.4 - Status de Sincronização da Aplicação
 Após a criação, o ArgoCD inicia automaticamente o processo de sincronização. Aguarde alguns instantes para verificação do status.
 
 Indicadores de sucesso:
@@ -352,7 +352,7 @@ Indicadores de sucesso:
 
 ---------
 
-## Etapa 5 - Acessando e testando a aplicação localmente
+## 🔷 Etapa 5 - Acessando e testando a aplicação localmente
 Para acessar a aplicação via port-forward, execute o seguinte comando no terminal para criar um túnel de redirecionamento de portas:
 ```bash
 kubectl port-forward svc/hello-app-service 8081:80 -n hello-app
@@ -381,5 +381,115 @@ Print da aplicação:
 
 <img width="1157" height="138" alt="Captura de tela de 2025-11-07 18-19-20" src="https://github.com/user-attachments/assets/d58d0f2e-7c13-4e79-8265-73e97e46abb6" />
 
+#### 🔹 Etapa 5.1 - Alterando o conteúdo da aplicação
+
+Modifique o conteúdo do arquivo main.py no repositório da aplicação por qualquer outra mensagem ou código que queira. A alteração foi feita e ficou da seguinte forma:
+``` python
+from fastapi import FastAPI
+from datetime import datetime
+import socket
+
+app = FastAPI(
+    title="🚀 Projeto CI/CD - Compass UOL",
+    description="Aplicação FastAPI utilizada para demonstrar pipeline automatizado de Integração e Entrega Contínua (CI/CD) com Docker, Kubernetes e ArgoCD.",
+    version="2.0.0"
+)
+
+@app.get("/")
+def root():
+    """Endpoint principal que retorna informações do ambiente e horário atual."""
+    current_time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    hostname = socket.gethostname()
+    return {
+        "empresa": "🏢 Compass UOL",
+        "mensagem": "✅ Deploy automatizado funcionando perfeitamente!",
+        "horário_atual": current_time,
+        "servidor": hostname,
+        "versão": "2.0.0",
+        "tecnologias": ["FastAPI", "Docker", "Kubernetes", "ArgoCD", "GitHub Actions"]
+    }
+
+@app.get("/healthz")
+def health():
+    """Endpoint usado pelo Kubernetes para verificar se o serviço está saudável."""
+    return {"status": "ok"}
+
+@app.get("/info")
+def info():
+    """Endpoint adicional com informações sobre o projeto."""
+    return {
+        "projeto": "Pipeline CI/CD Compass UOL",
+        "autora": "Julya 🐧",
+        "linguagem": "Python 3.11 + FastAPI",
+        "finalidade": "Demonstração de automação de build, push e deploy contínuo."
+    }
+```
+Em seguida, salve as alterações:
+```bash
+git add .
+git commit -m "Alteração para teste de pipeline CI/CD"
+git push origin main
+```
+Quando uma alteração é enviada para o repositório principal, o GitHub Actions é acionado automaticamente e executa sequencialmente:
+
+- Build da Imagem: Compila a nova versão do container com as modificações
+
+- Publicação no Registry: Realiza o push da imagem atualizada para o Docker Hub
+
+- Atualização de Configuração: Modifica a tag no arquivo deployment.yaml do repositório de manifests
+
+- Solicitação de Merge: Cria automaticamente um Pull Request com as alterações da nova versão
+
+Este ciclo garante que toda modificação no código resulte em uma nova versão implantável, seguindo o princípio de entrega contínua.
 
 
+Print do Pull Request
+
+<img width="1286" height="569" alt="Captura de tela de 2025-11-07 18-30-34" src="https://github.com/user-attachments/assets/9659b68d-d311-466d-8dad-d3d32e7ebd16" />
+
+#### 🔹 Etapa 5.2 - Verificando a sincronização no ArgoCD
+
+<img width="1303" height="651" alt="Captura de tela de 2025-11-07 18-50-53" src="https://github.com/user-attachments/assets/075f5f1d-f223-4220-ae82-93a2c6c6dbc3" />
+
+<img width="1058" height="654" alt="Captura de tela de 2025-11-07 18-50-23" src="https://github.com/user-attachments/assets/82813888-4b1a-4ddf-8cd0-9302bb713b9f" />
+
+#### 🔹 Etapa 5.3 - Validando a atualização da aplicação:
+Acesse novamente a aplicação usando o comando de port-forward:
+
+```bash
+kubectl port-forward svc/hello-app-service 8081:80 -n hello-app
+```
+Depois acesse pelo navegador:
+```text
+http://localhost:8080/
+```
+Print da aplicação atualizada:
+
+<img width="1297" height="303" alt="Captura de tela de 2025-11-07 18-40-38" src="https://github.com/user-attachments/assets/11e6bd83-fe5f-4707-a764-7599886f8a98" />
+
+#### 🔹 Etapa 5.4 - Verificando os pods ativos no cluster
+Para confirmar que a aplicação está rodando corretamente no Kubernetes, execute o seguinte comando:
+```bash
+kubectl get pods -n hello-app
+```
+Print dos pods ativos:
+
+<img width="809" height="102" alt="Captura de tela de 2025-11-07 18-56-38" src="https://github.com/user-attachments/assets/fbe1157c-1756-4ca1-a0dd-0cac5c98256a" />
+
+## ✅ Conclusão
+
+Projeto concluído com sucesso, destacando:
+
+✅ Aplicação FastAPI desenvolvida e containerizada
+
+✅ Pipeline CI/CD automatizado com GitHub Actions
+
+✅ Imagens publicadas no Docker Hub
+
+✅ Manifests sincronizados via ArgoCD
+
+✅ Deploy contínuo em cluster Kubernetes local
+
+✅ Boas práticas GitOps aplicadas (separação de repositórios e versionamento)
+
+O pipeline implementado garante entrega rápida, confiável e escalável, servindo como base prática para automação e DevOps moderno.
