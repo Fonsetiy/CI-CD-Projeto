@@ -300,3 +300,86 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 Após o acesso no painel do ArgoCD, clique em "Applications" no menu lateral, e em seguida clique no botão "+ New App".
 Preencha os campos da aplicação da seguinte forma:
 
+- Application Name: hello-app
+
+- Project: default
+
+- Habilitar:
+
+  ▪︎ Sync Policy → Automatic
+  
+  ▪︎ Prune Resources
+  
+  ▪︎ Self Heal
+  
+  ▪︎ Set Deletion Finalizer
+  
+  ▪︎ Auto-Create Namespace
+  
+  
+<img width="1300" height="653" alt="Captura de tela de 2025-11-07 11-25-05" src="https://github.com/user-attachments/assets/650bf4b3-9487-445f-b9e3-207776311d90" />
+
+
+Na seção inferior da interface, configure os parâmetros de conexão com o repositório:
+
+- Repository URL: https://github.com/Fonsetiy/hello-manifests
+
+- Revision: main
+
+- Path: . (indica que os manifests estão no diretório raiz)
+
+- Cluster Name: in-cluster
+
+- Namespace: hello-app
+
+
+Finalize clicando em Create para registrar a aplicação.
+
+<img width="1303" height="653" alt="Captura de tela de 2025-11-07 11-27-34" src="https://github.com/user-attachments/assets/3af0c062-4bc1-4141-9784-ee625393a2c5" />
+
+#### Etapa 4.4 - Status de Sincronização da Aplicação
+Após a criação, o ArgoCD inicia automaticamente o processo de sincronização. Aguarde alguns instantes para verificação do status.
+
+Indicadores de sucesso:
+
+- Healthy - Todos os recursos (Pods, Services) operando normalmente
+
+- Synced - Manifestos aplicados com sucesso no cluster
+
+<img width="1071" height="640" alt="Captura de tela de 2025-11-07 14-09-37" src="https://github.com/user-attachments/assets/8c51b3a0-c22d-49d9-8c4a-2f52c2f11f65" />
+
+<img width="1302" height="648" alt="Captura de tela de 2025-11-07 18-06-08" src="https://github.com/user-attachments/assets/720d90b2-9dcc-47b0-946e-f90758513310" />
+
+---------
+
+## Etapa 5 - Acessando e testando a aplicação localmente
+Para acessar a aplicação via port-forward, execute o seguinte comando no terminal para criar um túnel de redirecionamento de portas:
+```bash
+kubectl port-forward svc/hello-app-service 8081:80 -n hello-app
+```
+
+Explicação do comando:
+
+`kubectl port-forward`: Estabelece o redirecionamento de porta
+
+`svc/hello-app-service`: Referencia o serviço Kubernetes criado
+
+`8081:8000`: Mapeia a porta 8000 do cluster para a porta 8081 local
+
+`-n hello-app`: Especifica o namespace onde o serviço está implantado
+
+Resultado esperado:
+``` text
+Forwarding from 127.0.0.1:8081 -> 8000
+Forwarding from [::1]:8081 -> 8000
+```
+A aplicação estará acessível através do endereço: 
+``` bash
+http://localhost:8080`
+```
+Print da aplicação:
+
+<img width="1157" height="138" alt="Captura de tela de 2025-11-07 18-19-20" src="https://github.com/user-attachments/assets/d58d0f2e-7c13-4e79-8265-73e97e46abb6" />
+
+
+
